@@ -35,6 +35,10 @@ jobs:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
     steps:
+      - name: commits
+        env:
+          COMMITS: ${{ toJson(github.event.commits) }}
+        run: echo "$COMMITS"
       - name: Bump version and push tag
         if: ${{ github.event_name == 'push' }}
         uses: anothrNick/github-tag-action@1.75.0
