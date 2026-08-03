@@ -2,7 +2,7 @@
 
 This repository is used for the CI/CD module of the Full Stack Open course
 
-[The deployed app](https://fs-pokedex-s81m.onrender.com/)
+[The deployed app](https://fs-pokedex-s81m.onrender.com/) :>)
 
 ## Commands
 
