@@ -31,6 +31,40 @@ jobs:
       - name: Trigger deployment
         if: ${{ github.event_name == 'push' }}
         run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+      - name: Notify Discord of success
+        if: success() && github.event_name == 'push'
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: success
+          title: "Deployment successfull"
+          description: |
+            **Commit**: `${{ github.sha }}`
+            **Message:** `${{ github.event.head_commit.message }}`
+            **Author:** `${{ github.actor }}`
+          url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Notify Discord of failure
+        if: failure() && github.event_name == 'push'
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: failure
+          title: "Deployment failed"
+          description: |
+            **Repository:** `${{ github.repository }}`.
+            **Branch:** `${{ github.ref_name }}`
+            **Commit:** `${{ github.sha }}`
+            **Message:** `${{ github.event.head_commit.message }}`
+            **Author:** `${{ github.actor }}`
+            **Workflow:** `${{ github.workflow }}`
+            **Job:** `${{ github.job }}`
+
+            [View commit](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+            [View workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
   tag_release:
     needs: [simple_deployment_pipeline]
     if: >-
